@@ -2,10 +2,18 @@ require 'rails_helper'
 
 RSpec.describe 'the Merchant show' do 
   before(:each) do 
-    @merchant = MerchantFacade.all_merchants.first
-    @items = MerchantFacade.merchant_items(@merchant.id)
+    VCR.use_cassette('merchant') do 
+      @merchant = MerchantFacade.get_merchant(1)
+    end
+    VCR.use_cassette('merchant1_items') do 
+      @items = MerchantFacade.merchant_items(@merchant.id)
+    end
 
-    visit merchant_path(@merchant.id)
+    VCR.use_cassette('merchant') do 
+      VCR.use_cassette('merchant1_items') do
+        visit merchant_path(@merchant.id)
+      end
+    end
   end
 
   it 'has merchants name' do 
