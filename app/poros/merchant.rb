@@ -7,6 +7,6 @@ class Merchant
   end
 
   def items 
-
+    @items ||= MerchantFacade.merchant_items(id)
   end
 end
